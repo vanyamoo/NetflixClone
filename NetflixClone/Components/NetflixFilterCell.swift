@@ -20,15 +20,15 @@ struct NetflixFilterCell: View {
                 Image(systemName: "chevron.down")
             }
         }
-        
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
         .background(
             ZStack {
-                if isSelected {
+                //if isSelected {
                     Capsule(style: .circular)
                         .fill(.netflixGray)
-                }
+                        .opacity(isSelected ? 1 : 0) // better to draw it on the screen instaed of the if isSelected... to get rid of teh bounciness
+                //}
                 Capsule(style: .circular)
                     .stroke(lineWidth: 1)
             }
