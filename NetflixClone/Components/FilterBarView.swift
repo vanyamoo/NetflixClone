@@ -1,5 +1,5 @@
 //
-//  NetflixFilterBarView.swift
+//  FilterBarView.swift
 //  NetflixClone
 //
 //  Created by Vanya Mutafchieva on 17/10/2024.
@@ -20,11 +20,12 @@ struct FilterModel: Hashable, Equatable {
     }
 }
 
-struct NetflixFilterBarView: View {
+struct FilterBarView: View {
     
-    var onXMarkPressed: (() -> Void)?
     var filters: [FilterModel] = FilterModel.mockFilters
-    @State private var selectedFilter: FilterModel?
+    var selectedFilter: FilterModel?
+    var onXMarkPressed: (() -> Void)?
+    var onFilterPressed: ((FilterModel) -> Void)?
     
     var body: some View {
         ScrollView(.horizontal) {
@@ -39,8 +40,7 @@ struct NetflixFilterBarView: View {
                         .foregroundStyle(.netflixLightGray)
                         .padding(.vertical, 4)
                         .onTapGesture {
-                            //onXMarkPressed?()
-                            selectedFilter = nil
+                            onXMarkPressed?()
                         }
                         .transition(AnyTransition.move(edge: .leading))
                         .padding(.leading, 16)
@@ -48,25 +48,40 @@ struct NetflixFilterBarView: View {
                 
                 ForEach(filters, id: \.self) { filter in
                     if selectedFilter == nil || selectedFilter == filter {
-                        NetflixFilterCell(title: filter.title, isDropdown: filter.isDropdown, isSelected: filter == selectedFilter)
+                        FilterCell(title: filter.title, isDropdown: filter.isDropdown, isSelected: filter == selectedFilter)
                             .onTapGesture {
-                                selectedFilter = filter
+                                onFilterPressed?(filter)
                             }
                             .padding(.leading, ((selectedFilter == nil) && filter == filters.first) ? 16 : 0)
                     }
                     
                 }
             }
-            //.padding(.vertical, 4)
         }
         .scrollIndicators(.hidden)
         .animation(.bouncy, value: selectedFilter)
     }
 }
 
+fileprivate struct NetflixFilterBarViewPreview: View {
+    
+    @State private var filters = FilterModel.mockFilters
+    @State private var selectedFilter: FilterModel?
+    
+    var body: some View {
+        FilterBarView(
+            filters: filters,
+            selectedFilter: selectedFilter) {
+                selectedFilter = nil
+            } onFilterPressed: { newFilter in
+                selectedFilter = newFilter
+            }
+    }
+}
+
 #Preview {
     ZStack {
         Color.netflixBlack.ignoresSafeArea()
-        NetflixFilterBarView()
+        NetflixFilterBarViewPreview()
     }
 }

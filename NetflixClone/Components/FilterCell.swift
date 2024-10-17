@@ -1,5 +1,5 @@
 //
-//  NetflixFilterCell.swift
+//  FilterCell.swift
 //  NetflixClone
 //
 //  Created by Vanya Mutafchieva on 16/10/2024.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct NetflixFilterCell: View {
+struct FilterCell: View {
     
     var title = "Categories"
     var isDropdown = true
@@ -41,9 +41,9 @@ struct NetflixFilterCell: View {
     ZStack {
         Color.netflixBlack.ignoresSafeArea()
         HStack {
-            NetflixFilterCell(title: "TV Shows", isDropdown: false)
-            NetflixFilterCell(title: "Movies", isDropdown: false, isSelected: true)
-            NetflixFilterCell()
+            FilterCell(title: "TV Shows", isDropdown: false)
+            FilterCell(title: "Movies", isDropdown: false, isSelected: true)
+            FilterCell()
         }
     }
 }
