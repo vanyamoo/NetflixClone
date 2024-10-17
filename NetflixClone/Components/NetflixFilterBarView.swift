@@ -42,6 +42,8 @@ struct NetflixFilterBarView: View {
                             //onXMarkPressed?()
                             selectedFilter = nil
                         }
+                        .transition(AnyTransition.move(edge: .leading))
+                        .padding(.leading, 16)
                 }
                 
                 ForEach(filters, id: \.self) { filter in
@@ -49,8 +51,10 @@ struct NetflixFilterBarView: View {
                         .onTapGesture {
                             selectedFilter = filter
                         }
+                        .padding(.leading, ((selectedFilter == nil) && filter == filters.first) ? 16 : 0)
                 }
             }
+            //.padding(.vertical, 4)
         }
         .scrollIndicators(.hidden)
         .animation(.bouncy, value: selectedFilter)
