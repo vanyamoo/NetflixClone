@@ -47,11 +47,14 @@ struct NetflixFilterBarView: View {
                 }
                 
                 ForEach(filters, id: \.self) { filter in
-                    NetflixFilterCell(title: filter.title, isDropdown: filter.isDropdown, isSelected: filter == selectedFilter)
-                        .onTapGesture {
-                            selectedFilter = filter
-                        }
-                        .padding(.leading, ((selectedFilter == nil) && filter == filters.first) ? 16 : 0)
+                    if selectedFilter == nil || selectedFilter == filter {
+                        NetflixFilterCell(title: filter.title, isDropdown: filter.isDropdown, isSelected: filter == selectedFilter)
+                            .onTapGesture {
+                                selectedFilter = filter
+                            }
+                            .padding(.leading, ((selectedFilter == nil) && filter == filters.first) ? 16 : 0)
+                    }
+                    
                 }
             }
             //.padding(.vertical, 4)
