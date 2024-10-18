@@ -14,7 +14,6 @@ struct HomeView: View {
     @State private var selectedFilter: FilterModel?
     @State private var fullHeaderSize: CGSize = .zero
     @State private var heroProduct: Product?
-    //@State private var products: [Product] = []
     @State private var currentUser: User?
     @State private var productRows: [ProductRow] = []
     
