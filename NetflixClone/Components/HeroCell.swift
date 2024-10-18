@@ -35,8 +35,9 @@ struct HeroCell: View {
                     myList
                 }
             }
+            .frame(maxWidth: .infinity)
             .padding(32)
-            .background(LinearGradient(colors: [.netflixBlack.opacity(0.005), .netflixBlack.opacity(0.2), .netflixBlack.opacity(0.4)], startPoint: .top, endPoint: .bottom))
+            .background(LinearGradient(colors: [.netflixBlack.opacity(0.005), .netflixBlack.opacity(0.3), .netflixBlack.opacity(0.6)], startPoint: .top, endPoint: .bottom))
         }
         .cornerRadius(10)
         .aspectRatio(0.8, contentMode: .fit)

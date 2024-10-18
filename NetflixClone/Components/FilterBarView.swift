@@ -57,6 +57,7 @@ struct FilterBarView: View {
                     
                 }
             }
+            .padding(.vertical, 4)
         }
         .scrollIndicators(.hidden)
         .animation(.bouncy, value: selectedFilter)
@@ -83,5 +84,6 @@ fileprivate struct NetflixFilterBarViewPreview: View {
     ZStack {
         Color.netflixBlack.ignoresSafeArea()
         NetflixFilterBarViewPreview()
+            .background(.blue)
     }
 }
