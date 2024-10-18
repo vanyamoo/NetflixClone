@@ -17,18 +17,41 @@ struct MovieCell: View {
     var topTenRanking: Int?
     
     var body: some View {
-        ZStack(alignment: .bottom) {
-            ImageLoaderView(urlString: imageName)
-                .frame(width: width, height: height)
+        HStack {
             
-            VStack(spacing: 2) {
-                movieTitle
-                recentlyAdded
+            chartRanking
+            
+            ZStack(alignment: .bottom) {
+                
+                ImageLoaderView(urlString: imageName)
+                    .frame(width: width, height: height)
+                
+                VStack(spacing: 2) {
+                    movieTitle
+                    recentlyAdded
+                }
+                .frame(maxWidth: width)
+                .background(LinearGradient(colors: [.netflixBlack.opacity(0.005), .netflixBlack.opacity(0.2), .netflixBlack.opacity(0.2)], startPoint: .top, endPoint: .bottom))
+
             }
-            .frame(maxWidth: width)
-            .background(LinearGradient(colors: [.netflixBlack.opacity(0.005), .netflixBlack.opacity(0.2), .netflixBlack.opacity(0.2)], startPoint: .top, endPoint: .bottom))
+            .foregroundStyle(.netflixWhite)
+            .cornerRadius(6)
+            
         }
-        .foregroundStyle(.netflixWhite)
+    }
+    
+    @ViewBuilder
+    private var chartRanking: some View {
+        if let topTenRanking {
+            ZStack {
+                Rectangle()
+                    .frame(width: width / 2, height: height)
+                Text("\(topTenRanking)")
+                    .font(.system(size: 100, weight: .medium, design: .serif))
+                    .offset(x: 15, y: 30)
+                    .foregroundStyle(.netflixWhite)
+            }
+        }
     }
     
     private var movieTitle: some View {
@@ -50,5 +73,39 @@ struct MovieCell: View {
 }
 
 #Preview {
-    MovieCell()
+    ZStack {
+        Color.netflixBlack.ignoresSafeArea()
+        
+        VStack {
+            Text("Based on Books")
+                .fontWeight(.semibold)
+                .foregroundStyle(.netflixWhite)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
+            //ScrollView(.horizontal) {
+                HStack() {
+                    MovieCell()
+                    MovieCell()
+                    MovieCell()
+                    MovieCell()
+                }
+            //}
+            
+            Text("Top 10 Chart")
+                .fontWeight(.semibold)
+                .foregroundStyle(.netflixWhite)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            
+            ScrollView(.horizontal) {
+                HStack() {
+                    MovieCell(topTenRanking: 1)
+                    MovieCell(topTenRanking: 2)
+                    MovieCell(topTenRanking: 3)
+                    MovieCell(topTenRanking: 4)
+                }
+            }
+            .scrollIndicators(.hidden)
+        }
+        .padding()
+    }
 }
