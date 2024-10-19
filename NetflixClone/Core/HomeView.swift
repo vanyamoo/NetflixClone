@@ -25,48 +25,84 @@ struct HomeView: View {
                 VStack(spacing: 8) {
                     blankCellBehindHeader
                     
-                    if let heroProduct {
-                        HeroCell(
-                            imageName: heroProduct.firstImage,
-                            isNetflixFilm: true,
-                            title: heroProduct.title,
-                            genres: [],
-                            onBackgroundPressed: {
-                                //
-                            }, onPlayPressed: {
-                                //
-                            }, onMyListPressed: {
-                                //
-                            }
-                        )
-                        .padding(24)
-                    }
+                    heroCell
                     
-                    ForEach(0...20) { _ in
-                        Rectangle()
-                            .fill(.red)
-                            .frame(height: 200)
+                    LazyVStack(spacing: 16) {
+                        products
                     }
                 }
             }
             .scrollIndicators(.hidden)
             
-            VStack(spacing: 0) {
-                header
-                    .padding()
-                
-                filterBar
-            }
-            .background(.blue)
-            .readingFrame { frame in
-                fullHeaderSize = frame.size
-            }
+            headerSection
         }
         .task {
             await getData()
         }
         .foregroundStyle(.netflixWhite)
         .toolbar(.hidden, for: .navigationBar)
+    }
+    
+    @ViewBuilder
+    private var heroCell: some View {
+        if let heroProduct {
+            HeroCell(
+                imageName: heroProduct.firstImage,
+                isNetflixFilm: true,
+                title: heroProduct.title,
+                genres: [],
+                onBackgroundPressed: {
+                    //
+                }, onPlayPressed: {
+                    //
+                }, onMyListPressed: {
+                    //
+                }
+            )
+            .padding(.horizontal, 24)
+            .padding(.vertical, 12)
+        }
+    }
+    
+    private var products: some View {
+        ForEach(Array(productRows.enumerated()), id: \.offset) { (rowIndex, row) in
+            VStack(alignment: .leading, spacing: 6) {
+                Text("\(row.title)")
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.netflixWhite)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+                
+                ScrollView(.horizontal) {
+                    LazyHStack() {
+                        ForEach(Array(row.products.enumerated()), id: \.offset
+                        ) { (productIndex, product) in
+                            MovieCell(
+                                imageName: product.firstImage,
+                                title: product.title,
+                                isRecentlyAdded: product.recentlyAdded,
+                                topTenRanking: rowIndex == 1 ? productIndex + 1 : nil
+                            )
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                }
+                .scrollIndicators(.hidden)
+            }
+        }
+    }
+    
+    private var headerSection: some View {
+        VStack(spacing: 0) {
+            header
+                .padding()
+            
+            filterBar
+        }
+        .background(.blue)
+        .readingFrame { frame in
+            fullHeaderSize = frame.size
+        }
     }
     
     private func getData() async {

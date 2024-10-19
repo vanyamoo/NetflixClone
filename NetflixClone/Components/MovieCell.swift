@@ -36,21 +36,16 @@ struct MovieCell: View {
             }
             .foregroundStyle(.netflixWhite)
             .cornerRadius(6)
-            
         }
     }
     
     @ViewBuilder
     private var chartRanking: some View {
         if let topTenRanking {
-            ZStack {
-                Rectangle()
-                    .frame(width: width / 2, height: height)
                 Text("\(topTenRanking)")
                     .font(.system(size: 100, weight: .medium, design: .serif))
                     .offset(x: 15, y: 30)
                     .foregroundStyle(.netflixWhite)
-            }
         }
     }
     
@@ -66,8 +61,11 @@ struct MovieCell: View {
             .font(.system(size: 8))
             .padding(.vertical, 2)
             .padding(.horizontal ,8)
+            .padding(.bottom, 2)
             .background(.netflixRed)
             .cornerRadius(4)
+            .offset(y: 2)
+            .minimumScaleFactor(0.1)
             .opacity(isRecentlyAdded ? 1 : 0)
     }
 }
@@ -82,14 +80,14 @@ struct MovieCell: View {
                 .foregroundStyle(.netflixWhite)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
-            //ScrollView(.horizontal) {
+            ScrollView(.horizontal) {
                 HStack() {
+                    MovieCell(isRecentlyAdded: false)
                     MovieCell()
-                    MovieCell()
-                    MovieCell()
-                    MovieCell()
+                    MovieCell(isRecentlyAdded: false)
+                    MovieCell(isRecentlyAdded: false)
                 }
-            //}
+            }
             
             Text("Top 10 Chart")
                 .fontWeight(.semibold)
@@ -98,10 +96,11 @@ struct MovieCell: View {
             
             ScrollView(.horizontal) {
                 HStack() {
-                    MovieCell(topTenRanking: 1)
+                    MovieCell(isRecentlyAdded: false, topTenRanking: 1)
                     MovieCell(topTenRanking: 2)
-                    MovieCell(topTenRanking: 3)
-                    MovieCell(topTenRanking: 4)
+                    MovieCell(isRecentlyAdded: false, topTenRanking: 3)
+                    MovieCell(isRecentlyAdded: false, topTenRanking: 4)
+                    MovieCell(isRecentlyAdded: true, topTenRanking: 10)
                 }
             }
             .scrollIndicators(.hidden)
