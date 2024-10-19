@@ -13,6 +13,8 @@ struct HomeView: View {
     @State private var filters = FilterModel.mockFilters
     @State private var selectedFilter: FilterModel?
     @State private var fullHeaderSize: CGSize = .zero
+    @State private var scrollViewOffset: CGFloat = 0
+    
     @State private var heroProduct: Product?
     @State private var currentUser: User?
     @State private var productRows: [ProductRow] = []
@@ -21,7 +23,7 @@ struct HomeView: View {
         ZStack(alignment: .top) {
             Color.netflixBlack.ignoresSafeArea()
             
-            ScrollView {
+            ScrollViewWithOnScrollChanged(.vertical, showsIndicators: false) { // puts a GeometryReader on top of the ScrollView
                 VStack(spacing: 8) {
                     blankCellBehindHeader
                     
@@ -31,8 +33,9 @@ struct HomeView: View {
                         products
                     }
                 }
+            } onScrollChanged: { offset in
+                scrollViewOffset = offset.y
             }
-            .scrollIndicators(.hidden)
             
             headerSection
         }
@@ -106,9 +109,31 @@ struct HomeView: View {
             
             filterBar
         }
-        .background(.blue)
+        .padding(.bottom, 8)
+        .background(
+            ZStack {
+                if scrollViewOffset < -70 {
+                    Rectangle()
+                        .fill(Color.clear)
+                        .background(.ultraThinMaterial)
+                        .brightness(-0.2)
+                        .ignoresSafeArea()
+                }
+            }
+            
+        )
+//            ZStack {
+//                if scrollViewOffset < -70 {
+//                    Material.ultraThin
+//                }
+//            }
+//            
+//        )
+        .animation(.smooth, value: scrollViewOffset)
         .readingFrame { frame in
-            fullHeaderSize = frame.size
+            if fullHeaderSize == .zero {
+                fullHeaderSize = frame.size
+            }
         }
     }
     
@@ -123,7 +148,7 @@ struct HomeView: View {
                 let allBrands = Set(products.map({ $0.brand ?? "Brand goes here"})) // Set so we don't have duplicates
                 for brand in allBrands {
                     //let products = products.filter({ $0.brand == brand })
-                    rows.append(ProductRow(title: brand, products: products))
+                    rows.append(ProductRow(title: brand, products: products.shuffled()))
                 }
                 productRows = rows
             } catch {
@@ -156,15 +181,19 @@ struct HomeView: View {
         }
     }
     
+    @ViewBuilder
     private var filterBar: some View {
-        FilterBarView(
-            filters: filters,
-            selectedFilter: selectedFilter) {
-                selectedFilter = nil
-            } onFilterPressed: { newFilter in
-                selectedFilter = newFilter
-            }
-            .padding(.top, 16)
+        if scrollViewOffset > -20 {
+            FilterBarView(
+                filters: filters,
+                selectedFilter: selectedFilter) {
+                    selectedFilter = nil
+                } onFilterPressed: { newFilter in
+                    selectedFilter = newFilter
+                }
+                .padding(.top, 16)
+                .transition(.move(edge: .top).combined(with: .opacity))
+        }
     }
     
 }
