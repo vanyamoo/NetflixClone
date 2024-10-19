@@ -67,29 +67,36 @@ struct HomeView: View {
     private var products: some View {
         ForEach(Array(productRows.enumerated()), id: \.offset) { (rowIndex, row) in
             VStack(alignment: .leading, spacing: 6) {
-                Text("\(row.title)")
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.netflixWhite)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, 16)
-                
-                ScrollView(.horizontal) {
-                    LazyHStack() {
-                        ForEach(Array(row.products.enumerated()), id: \.offset
-                        ) { (productIndex, product) in
-                            MovieCell(
-                                imageName: product.firstImage,
-                                title: product.title,
-                                isRecentlyAdded: product.recentlyAdded,
-                                topTenRanking: rowIndex == 1 ? productIndex + 1 : nil
-                            )
-                        }
-                    }
-                    .padding(.horizontal, 16)
-                }
-                .scrollIndicators(.hidden)
+                categoryTitle(for: row)
+                products(for: row, rowIndex: rowIndex)
             }
         }
+    }
+    
+    private func categoryTitle(for row: ProductRow) -> some View {
+        Text("\(row.title)")
+            .fontWeight(.semibold)
+            .foregroundStyle(.netflixWhite)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 16)
+    }
+    
+    private func products(for row: ProductRow, rowIndex: Int) -> some View {
+        ScrollView(.horizontal) {
+            LazyHStack() {
+                ForEach(Array(row.products.enumerated()), id: \.offset
+                ) { (productIndex, product) in
+                    MovieCell(
+                        imageName: product.firstImage,
+                        title: product.title,
+                        isRecentlyAdded: product.recentlyAdded,
+                        topTenRanking: rowIndex == 1 ? productIndex + 1 : nil
+                    )
+                }
+            }
+            .padding(.horizontal, 16)
+        }
+        .scrollIndicators(.hidden)
     }
     
     private var headerSection: some View {
