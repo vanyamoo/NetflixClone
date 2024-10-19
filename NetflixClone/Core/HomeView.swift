@@ -23,27 +23,46 @@ struct HomeView: View {
         ZStack(alignment: .top) {
             Color.netflixBlack.ignoresSafeArea()
             
-            ScrollViewWithOnScrollChanged(.vertical, showsIndicators: false) { // puts a GeometryReader on top of the ScrollView
-                VStack(spacing: 8) {
-                    blankCellBehindHeader
-                    
-                    heroCell
-                    
-                    LazyVStack(spacing: 16) {
-                        products
-                    }
-                }
-            } onScrollChanged: { offset in
-                scrollViewOffset = offset.y
-            }
+            backgroundGradientLayer
             
-            headerSection
+            scrollViewLayer
+            
+            fullHeaderWithFilter
         }
         .task {
             await getData()
         }
         .foregroundStyle(.netflixWhite)
         .toolbar(.hidden, for: .navigationBar)
+    }
+    
+    private var backgroundGradientLayer:some View {
+        ZStack {
+            LinearGradient(colors: [.netflixGray.opacity(1), .netflixGray.opacity(0)], startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea()
+            
+            LinearGradient(colors: [.netflixDarkRed.opacity(0.5), .netflixGray.opacity(0)], startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea()
+        }
+        .frame(maxHeight: max(10, (400 + (scrollViewOffset * 0.75))))
+        .opacity(scrollViewOffset < -250 ? 0 : 1)
+        .animation(.easeInOut, value: scrollViewOffset)
+    }
+    
+    private var scrollViewLayer: some View {
+        ScrollViewWithOnScrollChanged(.vertical, showsIndicators: false) { // puts a GeometryReader on top of the ScrollView
+            VStack(spacing: 8) {
+                blankCellBehindHeader
+                
+                heroCell
+                
+                LazyVStack(spacing: 16) {
+                    products
+                }
+            }
+        } onScrollChanged: { offset in
+            scrollViewOffset = min(0, offset.y)
+        }
     }
     
     @ViewBuilder
@@ -102,7 +121,7 @@ struct HomeView: View {
         .scrollIndicators(.hidden)
     }
     
-    private var headerSection: some View {
+    private var fullHeaderWithFilter: some View {
         VStack(spacing: 0) {
             header
                 .padding()
@@ -122,13 +141,6 @@ struct HomeView: View {
             }
             
         )
-//            ZStack {
-//                if scrollViewOffset < -70 {
-//                    Material.ultraThin
-//                }
-//            }
-//            
-//        )
         .animation(.smooth, value: scrollViewOffset)
         .readingFrame { frame in
             if fullHeaderSize == .zero {
