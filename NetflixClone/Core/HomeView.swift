@@ -7,8 +7,11 @@
 
 import SwiftUI
 import SwiftfulUI
+import SwiftfulRouting
 
 struct HomeView: View {
+    
+    @Environment(\.router) var router
     
     @State private var filters = FilterModel.mockFilters
     @State private var selectedFilter: FilterModel?
@@ -74,9 +77,9 @@ struct HomeView: View {
                 title: heroProduct.title,
                 genres: [],
                 onBackgroundPressed: {
-                    //
+                    onProductPressed(product: heroProduct)
                 }, onPlayPressed: {
-                    //
+                    onProductPressed(product: heroProduct)
                 }, onMyListPressed: {
                     //
                 }
@@ -114,6 +117,9 @@ struct HomeView: View {
                         isRecentlyAdded: product.recentlyAdded,
                         topTenRanking: rowIndex == 1 ? productIndex + 1 : nil
                     )
+                    .onTapGesture {
+                        onProductPressed(product: product)
+                    }
                 }
             }
             .padding(.horizontal, 16)
@@ -174,11 +180,20 @@ struct HomeView: View {
             .frame(height: fullHeaderSize.height)
     }
     
+    private func onProductPressed(product: Product) {
+        router.showScreen(.sheet) { _ in
+            MovieDetailsView(product: product)
+        }
+    }
+    
     private var header: some View {
         HStack(spacing: 0) {
             Text("For Terry")
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .font(.title)
+                .onTapGesture {
+                    //
+                }
             HStack(spacing: 16) {
                 Image(systemName: "tv.badge.wifi")
                     .onTapGesture {
@@ -211,5 +226,7 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
+    RouterView { _ in
+        HomeView()
+    }
 }
