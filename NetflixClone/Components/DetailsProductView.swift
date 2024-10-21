@@ -51,6 +51,7 @@ struct DetailsProductView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .multilineTextAlignment(.leading)
         }
+        .padding(.top)
         .foregroundStyle(.netflixWhite)
     }
     

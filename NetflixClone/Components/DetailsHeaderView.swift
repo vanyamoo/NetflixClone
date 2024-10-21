@@ -63,7 +63,7 @@ struct DetailsHeaderView: View {
                     }
             }
             .font(.subheadline)
-            .fontWeight(.semibold)
+            .fontWeight(.bold)
             .padding()
         
     }
